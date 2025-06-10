@@ -7,12 +7,11 @@ import pandas as pd
 nest_asyncio.apply()
 
 # Carga tu dataset
-# Cambia el nombre del archivo si es necesario
 df = pd.read_csv('data_actualizado.csv', parse_dates=['Date'])
 
 app = FastAPI(
     title="Microservicio de Consulta de Dataset",
-    description="Filtra registros por fecha y pagina los resultados.",
+    description="Filtra registros por fecha, locación y pagina los resultados.",
     version="1.0"
 )
 
@@ -25,6 +24,7 @@ def get_registros(
     fecha: str = Query(None, description="Fecha exacta (yyyy-mm-dd)"),
     fecha_inicio: str = Query(None, description="Fecha inicial (yyyy-mm-dd)"),
     fecha_fin: str = Query(None, description="Fecha final (yyyy-mm-dd)"),
+    location_id: int = Query(None, description="ID de la locación"),
     page: int = Query(1, ge=1, description="Número de página (empieza en 1)"),
     limit: int = Query(10, ge=1, le=100, description="Registros por página (máx 100)")
 ):
@@ -39,6 +39,10 @@ def get_registros(
         data = data[data['Date'] >= fecha_inicio]
     elif fecha_fin:
         data = data[data['Date'] <= fecha_fin]
+
+    # Filtrado por Location_ID
+    if location_id is not None:
+        data = data[data['Location_ID'] == location_id]
 
     # Paginación
     total = len(data)
