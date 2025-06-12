@@ -10,9 +10,9 @@ df = df.sort_values('Date')
 # Cuenta cuántos registros hay por cada fecha original (en orden de aparición)
 conteo_fechas = df['Date'].value_counts().sort_index()
 
-# Genera las nuevas fechas, desde hoy hacia atrás, una por cada grupo de fecha original
-hoy = datetime.now().date()
-nuevas_fechas = [hoy - timedelta(days=i) for i in range(len(conteo_fechas))]
+# Genera las nuevas fechas, desde 10 días en el futuro hacia atrás, una por cada grupo de fecha original
+base_futura = datetime.now().date() + timedelta(days=10)
+nuevas_fechas = [base_futura - timedelta(days=i) for i in range(len(conteo_fechas))]
 nuevas_fechas = nuevas_fechas[::-1]  # Para asignar la fecha más reciente al último grupo
 
 # Crea un diccionario de mapeo: fecha original -> nueva fecha
